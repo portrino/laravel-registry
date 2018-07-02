@@ -2,17 +2,9 @@
 namespace Torann\Registry;
 
 use Illuminate\Support\ServiceProvider;
-use Torann\Registry\Commands\MigrationCommand;
 
 class RegistryServiceProvider extends ServiceProvider
 {
-
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
 
     /**
      * Bootstrap the application events.
@@ -55,7 +47,8 @@ class RegistryServiceProvider extends ServiceProvider
      */
     protected function registerRegistry()
     {
-        $this->app['registry'] = $this->app->share(function ($app) {
+        //$this->app['registry'] = $this->app->share(function ($app) {
+        $this->app->singleton('registry', function ($app) {
             $config = $app->config->get('registry', array());
 
             return new Registry($app['db'], $app['registry.cache'], $config);
@@ -69,7 +62,8 @@ class RegistryServiceProvider extends ServiceProvider
      */
     protected function registerCache()
     {
-        $this->app['registry.cache'] = $this->app->share(function ($app) {
+        //$this->app['registry.cache'] = $this->app->share(function ($app) {
+        $this->app->singleton('registry.cache', function ($app) {
             $meta = $app->config->get('registry.cache_path');
             $timestampManager = $app->config->get('registry.timestamp_manager');
             return new Cache($meta, $timestampManager);
